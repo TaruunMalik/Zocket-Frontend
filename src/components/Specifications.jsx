@@ -2,18 +2,22 @@ import React from "react";
 import { useRef, useState, useEffect, useCallback } from "react";
 import { SketchPicker } from "react-color";
 import "../App.css";
-import template_data from "../utils/template";
 import { ScanEye, ShieldAlert } from "lucide-react";
 import useEyeDropper from "use-eye-dropper";
 import { Minus, Plus } from "lucide-react";
 import { Sparkles } from "lucide-react";
 import { ImageDown } from "lucide-react";
+// Color of background
 let bgcolor;
+// Image's url
 let imageUrl = "";
+// Background design
 const bgImg =
   "https://d273i1jagfl543.cloudfront.net/templates/global_temp_landscape_temp_10_Design_Pattern.png";
 const mask =
+  // Mask image
   "https://d273i1jagfl543.cloudfront.net/templates/global_temp_landscape_temp_10_mask.png";
+// Stroke around the image
 const maskStroke =
   "https://d273i1jagfl543.cloudfront.net/templates/global_temp_landscape_temp_10_Mask_stroke.png";
 class CanvasEditor {
@@ -21,7 +25,8 @@ class CanvasEditor {
     this.canvas = canvasRef.current;
     this.ctx = this.canvas.getContext("2d");
     this.templateData = templateData;
-
+    // Function calls to perform tasks in order
+    // Setting up the canvas -> Drawing the Design -> Drawing the mask -> Drawing he masking stroke ->Drawing the caption, CTA
     this.setupCanvas();
     this.drawTemplate();
     this.drawImage();
@@ -31,25 +36,24 @@ class CanvasEditor {
 
   setupCanvas() {
     // Set up canvas properties (size, etc.)
-    this.canvas.width = 600; // Set your canvas width
-    this.canvas.height = 600; // Set your canvas heigh
+    this.canvas.width = 600; // Set canvas width
+    this.canvas.height = 600; // Set canvas height
   }
 
   drawTemplate() {
-    const { backgroundColor, caption, callToAction } = this.templateData;
-
     // Clear the canvas
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
 
     // Draw background color
     this.ctx.fillStyle = bgcolor;
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    // Background design image
     const imgBg = new Image();
     imgBg.src = bgImg;
     imgBg.onload = () => {
       this.ctx.drawImage(imgBg, 0, 0, this.canvas.width, this.canvas.height); // Set your image position and size
     };
-
+    // Mask stroke
     const maskStr = new Image();
     maskStr.src = maskStroke;
     maskStr.onload = () => {
@@ -89,7 +93,7 @@ class CanvasEditor {
     const drawTextInLines = (text, x, y, maxWidth, lineHeight) => {
       const words = text.split(" ");
       let line = "";
-
+      // This for loop is to check if the word count is exceeding 31, it is done to keep only 31 words in a line
       for (let i = 0; i < words.length; i++) {
         const testLine = line + words[i] + " ";
         const testWidth = this.ctx.measureText(testLine).width;
@@ -104,17 +108,17 @@ class CanvasEditor {
       this.ctx.fillText(line, x, y);
     };
 
-    const captionMaxWidth = 300; // Set your max width for caption text
+    const captionMaxWidth = 300; // Set max width for caption text
 
-    const lineHeight = 25; // Set your desired line height
-    // Draw caption text
-    // Draw call to action text
+    const lineHeight = 25;
     drawTextInLines(caption, 50, 50, captionMaxWidth, lineHeight);
   }
+  // Call to action Text
   drawCTA() {
     const { callToAction } = this.templateData;
     let width = 170;
     let height = 60;
+    // To remove the rectangle in case no call to action text exists
     this.ctx.fillStyle = callToAction === "" ? bgcolor : "white";
     this.ctx.strokeStyle = callToAction === "" ? bgcolor : "white";
     this.ctx.beginPath();
@@ -122,9 +126,9 @@ class CanvasEditor {
     this.ctx.stroke();
     this.ctx.fill();
     // Set text color and font style
-    this.ctx.fillStyle = "black"; // Example color for the text, you can change this
-    this.ctx.font = "20px Arial"; // Example font style, you can change this
-
+    this.ctx.fillStyle = "black"; //
+    this.ctx.font = "20px Arial"; //
+    // Function which allows only 20 letters in a line
     const drawTextInLines = (text, x, y, maxWidth, lineHeight) => {
       const words = text.split(" ");
       let line = "";
@@ -152,7 +156,7 @@ class CanvasEditor {
 }
 
 function Specifications({ templateData, onChange }) {
-  // SPECIFICATIONS
+  // ######   SPECIFICATIONS FOR INPUTS/IMAGES/COLORS   ######
   const [color, setColor] = useState("#910505");
   const imageInputRef = useRef(null);
   const [colorHistory, setColorHistory] = useState([]);
@@ -171,7 +175,6 @@ function Specifications({ templateData, onChange }) {
     });
   };
   const pickColor = useCallback(() => {
-    // Using async/await (can be used as a promise as-well)
     const openPicker = async () => {
       try {
         const color = await open();
@@ -202,13 +205,13 @@ function Specifications({ templateData, onChange }) {
     setColor(clickedColor);
   };
 
-  // CANVAS EDITOR
+  // ###### CANVAS EDITOR FUNCTIONS ######
 
   const canvasRef = useRef(null);
   const [imageFile, setImageFile] = useState(null);
   const [caption, setCaption] = useState(templateData.caption);
   const [callToAction, setCallToAction] = useState(templateData.callToAction);
-
+  // This function converts the uploaded image into a URL
   const handleImageUpload = (event) => {
     const file = event.target.files[0];
     //const imageInput = imageInputRef.current;
@@ -226,12 +229,13 @@ function Specifications({ templateData, onChange }) {
   useEffect(() => {
     imageUrl = imageFile === null ? "" : imageFile;
   }, [imageFile]);
+  // FUNCTION TO UPDATE CAPTION VALUE
   const handleCaptionChange = (event) => {
     const newCaption = event.target.value;
     onChange({ caption: newCaption });
     setCaption(newCaption);
   };
-
+  // FUNCTION TO UPDATE CTA VALUE
   const handleCallToActionChange = (event) => {
     const newCallToAction = event.target.value;
     onChange({ callToAction: newCallToAction });
@@ -250,6 +254,7 @@ function Specifications({ templateData, onChange }) {
   return (
     <>
       <div className=" flex-1 items-center justify-center flex  background-divs ">
+        {/* CANVAS REF */}
         <canvas
           ref={canvasRef}
           className="border"
@@ -265,6 +270,7 @@ function Specifications({ templateData, onChange }) {
           </p>
         </section>
         <section className=" w-4/5 p-3 border border-gray-200 flex rounded-lg">
+          {/* UPLOAD IMAGE */}
           <ImageDown color="lightblue" className=" mr-2" />
           <p className=" text-gray-400">Change the ad creative image.</p>
           <span
@@ -319,6 +325,7 @@ function Specifications({ templateData, onChange }) {
           <span className=" text-left text-xs">Choose your color</span>
         </section>
         <div className=" flex gap-3 items-start w-4/5 p-2 ">
+          {/* 5 MOST RECENT COLORS TO CHOOSE FROM */}
           {colorHistory.map((item, ind) => (
             <span
               key={ind}
@@ -333,6 +340,7 @@ function Specifications({ templateData, onChange }) {
           >
             {!pickerOn ? <Plus size={"15"} /> : <Minus size={"15"} />}
           </button>
+          {/* EYE DROPPER FUNCTIONALITY */}
           {isSupported() ? (
             <section className=" relative  w-[18%]">
               <button onClick={pickColor}>
@@ -349,7 +357,7 @@ function Specifications({ templateData, onChange }) {
             </p>
           )}
         </div>
-
+        {/* COLOR PICKER FUNCTIONALITY */}
         {pickerOn && (
           <SketchPicker
             color={color}
