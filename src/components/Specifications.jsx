@@ -338,7 +338,7 @@ function Specifications({ templateData, onChange }) {
               <button onClick={pickColor}>
                 <ScanEye />
                 <span className=" text-[7px] absolute top-1 right-0 ">
-                  Pick using an eyedropper
+                  Pick using eyedropper
                 </span>
               </button>
             </section>
