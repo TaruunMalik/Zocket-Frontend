@@ -8,7 +8,7 @@ const template_data = {
     text_color: "#FFFFFF",
   },
   cta: {
-    text: "Explore Now",
+    text: "Shop Now",
     position: { x: 190, y: 320 },
     text_color: "#FFFFFF",
     background_color: "#000000",

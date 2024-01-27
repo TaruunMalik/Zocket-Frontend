@@ -11,7 +11,7 @@ function App() {
     imageUrl: "",
     caption: caption_template,
     callToAction: cta_template,
-    backgroundColor: "#6895D2",
+    backgroundColor: "#0369a1",
   });
   // Function to handle changes in the template data
   const handleTemplateChange = (newData) => {

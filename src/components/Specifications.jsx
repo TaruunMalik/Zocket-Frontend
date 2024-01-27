@@ -116,48 +116,40 @@ class CanvasEditor {
   // Call to action Text
   drawCTA() {
     const { callToAction } = this.templateData;
-    let width = 170;
+    let minWidth = 150; // this is the minimum width of rectangular box
     let height = 60;
+
+    // Calculate the width based on the length of the call to action text
+    const getTextWidth = (text) => {
+      const tempCanvas = document.createElement("canvas");
+      const tempCtx = tempCanvas.getContext("2d");
+      tempCtx.font = "20px Arial";
+      return tempCtx.measureText(text).width + 40; // Add some padding for
+    };
+
+    const ctaTextWidth = getTextWidth(callToAction);
+    let width = Math.max(ctaTextWidth, minWidth); // Ensure the width is at least minWidth
+
     // To remove the rectangle in case no call to action text exists
     this.ctx.fillStyle = callToAction === "" ? bgcolor : "white";
     this.ctx.strokeStyle = callToAction === "" ? bgcolor : "white";
+    // Draw the curved edges rectangle
     this.ctx.beginPath();
     this.ctx.roundRect(50, 110, width, height, [15]);
     this.ctx.stroke();
     this.ctx.fill();
-    // Set text color and font style
-    this.ctx.fillStyle = "black"; //
-    this.ctx.font = "20px Arial"; //
-    // Function which allows only 20 letters in a line
-    const drawTextInLines = (text, x, y, maxWidth, lineHeight) => {
-      const words = text.split(" ");
-      let line = "";
 
-      for (let i = 0; i < words.length; i++) {
-        const testLine = line + words[i] + " ";
-        const testWidth = this.ctx.measureText(testLine).width;
-        if (testWidth > maxWidth && i > 0) {
-          this.ctx.fillText(line, x, y);
-          line = words[i] + " ";
-          y += lineHeight;
-          height += 30;
-        } else {
-          line = testLine;
-        }
-      }
-      this.ctx.fillText(line, x, y);
-    };
+    // text color and font style
+    this.ctx.fillStyle = "black";
+    this.ctx.font = "20px Arial";
 
-    const callToActionMaxWidth = 170; // Set your max width for call to action text
-    const lineHeight = 20; // Set your desired line height
-
-    drawTextInLines(callToAction, 78, 147, callToActionMaxWidth, lineHeight);
+    this.ctx.fillText(callToAction, 78, 147);
   }
 }
 
 function Specifications({ templateData, onChange }) {
   // ######   SPECIFICATIONS FOR INPUTS/IMAGES/COLORS   ######
-  const [color, setColor] = useState("#910505");
+  const [color, setColor] = useState(templateData.backgroundColor);
   const imageInputRef = useRef(null);
   const [colorHistory, setColorHistory] = useState([]);
   const [pickerOn, setPickerOn] = useState(false);
