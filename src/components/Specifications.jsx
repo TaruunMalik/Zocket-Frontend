@@ -338,12 +338,12 @@ function Specifications({ templateData, onChange }) {
               <button onClick={pickColor}>
                 <ScanEye />
                 <span className=" text-[7px] absolute top-1 right-0 ">
-                  Pick using a eyedropper
+                  Pick using an eyedropper
                 </span>
               </button>
             </section>
           ) : (
-            <p className=" text-center flex gap-2">
+            <p className=" text-center flex gap-1">
               <ShieldAlert /> Sorry, Eyedropper color selection not available
               for this browser.
             </p>
